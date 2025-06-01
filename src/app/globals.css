@@ -1,5 +1,5 @@
-@import "tailwindcss";
-@import "tw-animate-css";
+@import 'tailwindcss';
+@import 'tw-animate-css';
 
 @theme {
   /* Cores principais */
@@ -12,4 +12,6 @@
   --color-background: #211712; /* Fundo escuro (quase preto) */
   --color-surface: #ffffff; /* Branco puro para superfícies */
   --color-surface-variant: #c4a396; /* Variante mais clara para contrastes */
+
+  --color-muted-foreground: #c4a396;
 }
