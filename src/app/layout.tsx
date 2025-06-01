@@ -1,15 +1,17 @@
-import type { Metadata } from "next";
-import { Inter } from "next/font/google";
-import "./globals.css";
+import type { Metadata } from 'next';
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { BookOpenCheck } from 'lucide-react';
 
 const inter = Inter({
-  subsets: ["latin"],
-  display: "swap",
+  subsets: ['latin'],
+  display: 'swap',
 });
 
 export const metadata: Metadata = {
-  title: "MyComics | Your Digital Collection",
-  description: "Your personal comic book collection - Organize and enjoy your favorite comics in one place",
+  title: 'MyComics | Your Digital Collection',
+  description:
+    'Your personal comic book collection - Organize and enjoy your favorite comics in one place',
 };
 
 export default function RootLayout({
@@ -22,22 +24,25 @@ export default function RootLayout({
       <body className={`${inter.className} h-full flex flex-col bg-background antialiased`}>
         <header className="bg-primary text-surface py-6 shadow-lg border-b border-accent/10">
           <div className="container mx-auto px-4">
-            <h1 className="text-3xl font-extrabold text-surface hover:text-accent transition-colors duration-300 tracking-tight">
-              MyComics
+            <h1 className="text-3xl text-surface hover:text-accent transition-colors duration-300 tracking-tight flex items-center">
+              <BookOpenCheck className="size-8 text-accent -mb-1" />
+              <span className="ml-2">
+                My<strong className="italic font-extrabold">Comics</strong>
+              </span>
             </h1>
           </div>
         </header>
 
-        <main className="flex-1 container mx-auto px-4 py-8">
-          {children}
-        </main>
+        <main className="flex-1 container mx-auto px-4 py-8">{children}</main>
 
         <footer className="bg-primary text-light-accent py-6 border-t border-accent/10">
           <div className="container mx-auto px-4 text-center">
             <p className="text-sm font-medium tracking-wide">
-              Made with{" "}
-              <span className="text-accent hover:text-surface transition-colors duration-300">❤</span>
-              {" "}by{" "}
+              Made with{' '}
+              <span className="text-accent hover:text-surface transition-colors duration-300">
+                ❤
+              </span>{' '}
+              by{' '}
               <span className="text-surface hover:text-accent transition-colors duration-300">
                 BarrosDev
               </span>
