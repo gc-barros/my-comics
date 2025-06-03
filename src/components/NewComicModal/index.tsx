@@ -28,33 +28,9 @@ import { searchComics } from '@/services/marvel';
 import { useDebounce } from '@/hooks/useDebounce';
 import Image from 'next/image';
 import { X } from 'lucide-react';
+import { MarvelComic } from '@/types/marvel';
 
 type ComicStatus = 'not_started' | 'in_progress' | 'finished';
-
-interface MarvelComic {
-  id: number;
-  title: string;
-  description: string;
-  textObjects: Array<{
-    type: string;
-    language: string;
-    text: string;
-  }>;
-  thumbnail: {
-    path: string;
-    extension: string;
-  };
-  creators: {
-    items: Array<{
-      name: string;
-      role: string;
-    }>;
-  };
-  dates: Array<{
-    type: string;
-    date: string;
-  }>;
-}
 
 interface NewComicModalProps {
   children: React.ReactNode;
@@ -63,9 +39,14 @@ interface NewComicModalProps {
 const ComicTag = ({ title, onRemove }: { title: string; onRemove: () => void }) => (
   <div className="flex items-center justify-between gap-1 bg-accent/20 text-surface px-2 py-1 rounded-md">
     <span className="text-sm truncate">{title}</span>
-    <button onClick={onRemove} className="text-accent hover:text-surface transition-colors">
+    <Button
+      variant="ghost"
+      size="icon"
+      onClick={onRemove}
+      className="h-4 w-4 p-0 text-accent hover:text-surface hover:bg-transparent cursor-pointer"
+    >
       <X size={14} />
-    </button>
+    </Button>
   </div>
 );
 
@@ -139,15 +120,12 @@ export function NewComicModal({ children }: NewComicModalProps) {
   };
 
   const getDescription = (comic: MarvelComic) => {
-    // Tenta encontrar primeiro o preview_text
     const previewText = comic.textObjects.find(obj => obj.type === 'issue_preview_text');
     if (previewText) return previewText.text;
 
-    // Se não encontrar, tenta o solicit_text
     const solicitText = comic.textObjects.find(obj => obj.type === 'issue_solicit_text');
     if (solicitText) return solicitText.text;
 
-    // Se não encontrar nenhum, retorna a descrição padrão ou mensagem de fallback
     return comic.description || 'No description available';
   };
 
@@ -193,9 +171,10 @@ export function NewComicModal({ children }: NewComicModalProps) {
             {suggestions.length > 0 && (
               <div className="absolute z-10 w-full mt-1 bg-primary border border-light-accent/20 rounded-md shadow-lg">
                 {suggestions.map(comic => (
-                  <button
+                  <Button
                     key={comic.id}
-                    className="w-full p-2 text-left hover:bg-light-accent/10 flex items-center gap-2"
+                    variant="ghost"
+                    className="w-full p-2 text-left hover:bg-light-accent/10 flex items-center gap-2 h-auto cursor-pointer"
                     onClick={() => handleComicSelect(comic)}
                   >
                     <Image
@@ -206,7 +185,7 @@ export function NewComicModal({ children }: NewComicModalProps) {
                       className="rounded"
                     />
                     <span className="flex-1 truncate">{comic.title}</span>
-                  </button>
+                  </Button>
                 ))}
               </div>
             )}
@@ -228,7 +207,6 @@ export function NewComicModal({ children }: NewComicModalProps) {
               </div>
             </div>
 
-            {/* Linha divisória vertical */}
             <div className="absolute top-0 left-1/2 h-full w-px bg-light-accent/20 -translate-x-1/2" />
 
             {/* Coluna 2: Detalhes e Controles */}
@@ -282,7 +260,7 @@ export function NewComicModal({ children }: NewComicModalProps) {
                           {plannedStartDate ? (
                             format(plannedStartDate, 'dd/MM/yyyy')
                           ) : (
-                            <span>Selecione uma data</span>
+                            <span>Select a date</span>
                           )}
                         </Button>
                       </PopoverTrigger>
