@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { StarRating } from '../StarRating';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { comicFormSchema, type ComicFormData } from './schema';
+import { comicFormSchema, type ComicFormData, type Status } from './schema';
 
 interface ComicFormProps {
   totalPages: number;
@@ -33,7 +33,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
   } = useForm<ComicFormData>({
     resolver: zodResolver(comicFormSchema),
     defaultValues: {
-      status: undefined,
+      status: 'not_started',
       plannedStartDate: null,
       currentPage: null,
       rating: null,
@@ -50,7 +50,10 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
           name="status"
           control={control}
           render={({ field }) => (
-            <Select onValueChange={field.onChange} value={field.value?.toString()}>
+            <Select
+              onValueChange={(value: Status) => field.onChange(value)}
+              value={field.value?.toString()}
+            >
               <SelectTrigger
                 className="bg-primary text-surface border-light-accent/20 focus:ring-light-accent 
                 focus:ring-offset-0 w-full"

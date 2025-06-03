@@ -8,7 +8,7 @@ export type Status = z.infer<typeof statusEnum>;
 
 export const comicFormSchema = z
   .object({
-    status: statusEnum.nullable().pipe(statusEnum),
+    status: statusEnum,
     plannedStartDate: z
       .date({
         required_error: 'Please select a start date',
