@@ -34,9 +34,9 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
     resolver: zodResolver(comicFormSchema),
     defaultValues: {
       status: undefined,
-      plannedStartDate: undefined,
-      currentPage: undefined,
-      rating: undefined,
+      plannedStartDate: null,
+      currentPage: null,
+      rating: null,
     },
   });
 
@@ -93,7 +93,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
                   <Calendar
                     className="bg-secondary rounded text-surface"
                     mode="single"
-                    selected={value as Date | undefined}
+                    selected={value instanceof Date ? value : undefined}
                     onSelect={onChange}
                     initialFocus
                     locale={ptBR}
@@ -123,8 +123,8 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
                 type="number"
                 min={1}
                 max={totalPages}
-                value={(value as number)?.toString() || ''}
-                onChange={e => onChange(Number(e.target.value))}
+                value={value?.toString() || ''}
+                onChange={e => onChange(e.target.value ? Number(e.target.value) : null)}
                 {...field}
                 className="bg-primary border-light-accent/20"
               />
@@ -144,7 +144,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
             name="rating"
             control={control}
             render={({ field: { value, onChange } }) => (
-              <StarRating value={(value as number) || 0} onChange={onChange} />
+              <StarRating value={typeof value === 'number' ? value : 0} onChange={onChange} />
             )}
           />
           {errors.rating && <p className="text-sm text-red-500">{errors.rating.message}</p>}
