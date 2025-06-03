@@ -2,6 +2,7 @@ export interface MarvelComic {
   id: number;
   title: string;
   description: string;
+  pageCount: number;
   textObjects: Array<{
     type: string;
     language: string;
