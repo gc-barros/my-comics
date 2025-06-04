@@ -14,17 +14,20 @@ import { MarvelComic } from '@/types/marvel';
 import { ComicSearch } from './ComicSearch';
 import { ComicDetails } from './ComicDetails';
 import type { ComicFormData } from './schema';
+import { SavedComic, comicsService } from '@/services/comics';
 
 interface NewComicModalProps {
   children: React.ReactNode;
+  onSave?: (comic: SavedComic) => void;
 }
 
-export function NewComicModal({ children }: NewComicModalProps) {
+export function NewComicModal({ children, onSave }: NewComicModalProps) {
   const [search, setSearch] = useState('');
   const [suggestions, setSuggestions] = useState<MarvelComic[]>([]);
   const [selectedComic, setSelectedComic] = useState<MarvelComic | null>(null);
   const [isSearching, setIsSearching] = useState(false);
   const [noResults, setNoResults] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
 
   const debouncedSearch = useDebounce(search, 500);
 
@@ -58,6 +61,7 @@ export function NewComicModal({ children }: NewComicModalProps) {
     setSearch('');
     setSuggestions([]);
     setSelectedComic(null);
+    setIsOpen(false);
   };
 
   const handleComicSelect = (comic: MarvelComic) => {
@@ -67,13 +71,21 @@ export function NewComicModal({ children }: NewComicModalProps) {
   };
 
   const handleSave = (data: ComicFormData) => {
-    // TODO: Implementar a lógica de salvar
-    console.log('Save clicked', { comic: selectedComic, ...data });
+    if (!selectedComic) return;
+
+    const savedComic = comicsService.save(selectedComic, data);
+    onSave?.(savedComic);
     resetFields();
   };
 
   return (
-    <Dialog onOpenChange={open => !open && resetFields()}>
+    <Dialog
+      open={isOpen}
+      onOpenChange={open => {
+        setIsOpen(open);
+        if (!open) resetFields();
+      }}
+    >
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent className="sm:max-w-[900px] bg-primary text-surface border-secondary">
         <DialogHeader>

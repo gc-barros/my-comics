@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { StarRating } from '../StarRating';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { comicFormSchema, type ComicFormData, type Status } from './schema';
+import { createComicFormSchema, type ComicFormData, type Status } from './schema';
 
 interface ComicFormProps {
   totalPages: number;
@@ -31,7 +31,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
     watch,
     formState: { errors },
   } = useForm<ComicFormData>({
-    resolver: zodResolver(comicFormSchema),
+    resolver: zodResolver(createComicFormSchema(totalPages)),
     defaultValues: {
       status: 'not_started',
       plannedStartDate: null,
@@ -125,7 +125,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
                 id="currentPage"
                 type="number"
                 min={1}
-                max={totalPages}
+                max={totalPages > 0 ? totalPages : undefined}
                 value={value?.toString() || ''}
                 onChange={e => onChange(e.target.value ? Number(e.target.value) : null)}
                 {...field}
@@ -133,7 +133,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
               />
             )}
           />
-          <p className="text-sm text-light-accent">of {totalPages}</p>
+          {totalPages > 0 && <p className="text-sm text-light-accent">of {totalPages}</p>}
           {errors.currentPage && (
             <p className="text-sm text-red-500">{errors.currentPage.message}</p>
           )}
