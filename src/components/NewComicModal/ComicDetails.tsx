@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { MarvelComic } from '@/types/marvel';
 import { ComicForm } from './ComicForm';
-import type { ComicFormData } from './schema';
+import type { ComicFormData } from '../../types/comicFormSchema';
 
 interface ComicDetailsProps {
   comic: MarvelComic;

@@ -16,7 +16,7 @@ import { cn } from '@/lib/utils';
 import { StarRating } from '../StarRating';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { createComicFormSchema, type ComicFormData, type Status } from './schema';
+import { comicFormSchema, type ComicFormData, type Status } from '../../types/comicFormSchema';
 
 interface ComicFormProps {
   totalPages: number;
@@ -31,7 +31,7 @@ export function ComicForm({ totalPages, onCancel, onSave }: ComicFormProps) {
     watch,
     formState: { errors },
   } = useForm<ComicFormData>({
-    resolver: zodResolver(createComicFormSchema(totalPages)),
+    resolver: zodResolver(comicFormSchema(totalPages)),
     defaultValues: {
       status: 'not_started',
       plannedStartDate: null,

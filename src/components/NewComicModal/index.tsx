@@ -13,7 +13,7 @@ import { searchComics } from '@/services/marvel';
 import { MarvelComic } from '@/types/marvel';
 import { ComicSearch } from './ComicSearch';
 import { ComicDetails } from './ComicDetails';
-import type { ComicFormData } from './schema';
+import type { ComicFormData } from '../../types/comicFormSchema';
 import { SavedComic, comicsService } from '@/services/comics';
 
 interface NewComicModalProps {

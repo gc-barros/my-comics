@@ -6,7 +6,7 @@ const statusEnum = z.enum(['not_started', 'in_progress', 'finished'], {
 
 export type Status = z.infer<typeof statusEnum>;
 
-export const createComicFormSchema = (pageCount: number) =>
+export const comicFormSchema = (pageCount: number) =>
   z
     .object({
       status: statusEnum,
@@ -52,4 +52,4 @@ export const createComicFormSchema = (pageCount: number) =>
       path: ['rating'],
     });
 
-export type ComicFormData = z.infer<ReturnType<typeof createComicFormSchema>>;
+export type ComicFormData = z.infer<ReturnType<typeof comicFormSchema>>;

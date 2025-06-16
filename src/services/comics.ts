@@ -1,5 +1,5 @@
 import { MarvelComic } from '@/types/marvel';
-import { ComicFormData } from '@/components/NewComicModal/schema';
+import { ComicFormData } from '@/types/comicFormSchema';
 
 export interface SavedComic {
   id: string;
@@ -19,7 +19,7 @@ export const comicsService = {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (!saved) return [];
     return JSON.parse(saved, (key, value) => {
-      if (key === 'plannedStartDate' || key === 'createdAt' || key === 'updatedAt') {
+      if (value && (key === 'plannedStartDate' || key === 'createdAt' || key === 'updatedAt')) {
         return new Date(value);
       }
       return value;
@@ -39,6 +39,8 @@ export const comicsService = {
       createdAt: new Date(),
       updatedAt: new Date(),
     };
+
+    console.log(newComic);
 
     comics.push(newComic);
     localStorage.setItem(STORAGE_KEY, JSON.stringify(comics));

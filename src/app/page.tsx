@@ -8,13 +8,14 @@ import { SavedComic, comicsService } from '@/services/comics';
 import { LoadingComics } from '@/components/LoadingComics';
 import { EmptyComicCollection } from '@/components/EmptyComicCollection';
 import { ComicGrid } from '@/components/ComicGrid';
+import { Toaster, toast } from 'sonner';
 
 export default function Home() {
   const [comics, setComics] = useState<SavedComic[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Simula um pequeno delay para mostrar o loading
+    // Simulates a small delay to show loading
     setTimeout(() => {
       setComics(comicsService.getAll());
       setIsLoading(false);
@@ -23,10 +24,17 @@ export default function Home() {
 
   const handleSaveComic = (comic: SavedComic) => {
     setComics(prev => [...prev, comic]);
+    toast.success('Comic added successfully!');
+  };
+
+  const handleEditComic = (updatedComic: SavedComic) => {
+    setComics(prev => prev.map(comic => (comic.id === updatedComic.id ? updatedComic : comic)));
+    toast.success('Comic updated successfully!');
   };
 
   const handleComicDeleted = (id: string) => {
     setComics(prev => prev.filter(comic => comic.id !== id));
+    toast.success('Comic deleted successfully!');
   };
 
   return (
@@ -53,8 +61,14 @@ export default function Home() {
       ) : comics.length === 0 ? (
         <EmptyComicCollection />
       ) : (
-        <ComicGrid comics={comics} onComicDeleted={handleComicDeleted} />
+        <ComicGrid
+          comics={comics}
+          onComicDeleted={handleComicDeleted}
+          onComicEdited={handleEditComic}
+        />
       )}
+
+      <Toaster richColors position="bottom-right" />
     </div>
   );
 }
