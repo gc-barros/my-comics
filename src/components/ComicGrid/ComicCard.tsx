@@ -1,18 +1,19 @@
 import Image from 'next/image';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import { StarRating } from './StarRating';
+import { StarRating } from '../StarRating';
 import { comicsService, SavedComic } from '@/services/comics';
 import { cn } from '@/lib/utils';
 import { Pencil, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { ConfirmDialog } from './ui/confirm-dialog';
-import { EditComicModal } from './EditComicModal';
+import { ConfirmDialog } from '../ui/confirm-dialog';
+import { EditComicModal } from '../EditComicModal';
+import { ComicFormData } from '@/types/comicFormSchema';
 
 interface ComicCardProps {
   comic: SavedComic;
-  onDelete?: (id: string) => void;
-  onEdit?: (comic: SavedComic) => void;
+  onDelete: (id: string) => void;
+  onEdit: (comic: SavedComic) => void;
 }
 
 const statusColors = {
@@ -34,16 +35,13 @@ export function ComicCard({ comic, onDelete, onEdit }: ComicCardProps) {
 
   const handleDelete = () => {
     comicsService.delete(comic.id);
-
-    if (onDelete) {
-      onDelete(comic.id);
-    }
+    onDelete(comic.id);
   };
 
-  const handleEdit = (updatedComic: SavedComic) => {
-    if (onEdit) {
-      onEdit(updatedComic);
-    }
+  const handleEdit = (data: ComicFormData) => {
+    const updatedComic = comicsService.update(comic.id, data);
+    onEdit(updatedComic);
+    setIsEditModalOpen(false);
   };
 
   return (
@@ -126,8 +124,8 @@ export function ComicCard({ comic, onDelete, onEdit }: ComicCardProps) {
       <EditComicModal
         comic={comic}
         isOpen={isEditModalOpen}
-        onClose={() => setIsEditModalOpen(false)}
         onSave={handleEdit}
+        onClose={() => setIsEditModalOpen(false)}
       />
     </>
   );

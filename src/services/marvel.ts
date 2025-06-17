@@ -1,5 +1,5 @@
 import md5 from 'md5';
-import { MARVEL_API_BASE_URL, MARVEL_PRIVATE_KEY, MARVEL_PUBLIC_KEY } from '@/config/marvel';
+import { MARVEL_API_BASE_URL, MARVEL_PRIVATE_KEY, MARVEL_PUBLIC_KEY } from '@/config/marvelKeys';
 import { MarvelComic, MarvelResponse } from '@/types/marvel';
 
 export async function searchComics(query: string): Promise<MarvelComic[]> {

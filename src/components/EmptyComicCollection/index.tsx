@@ -7,8 +7,8 @@ export function EmptyComicCollection() {
       <div className="space-y-2">
         <h3 className="text-xl font-semibold text-surface">No Comics Yet</h3>
         <p className="text-light-accent max-w-sm">
-          Start building your collection by adding your first comic book. Click the "New Comic"
-          button above to get started!
+          Start building your collection by adding your first comic book. Click the &quot;New
+          Comic&quot; button above to get started!
         </p>
       </div>
     </div>
