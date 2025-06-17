@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import {
   Dialog,
   DialogContent,
@@ -9,57 +9,29 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { useDebounce } from '@/hooks/useDebounce';
-import { searchComics } from '@/services/marvel';
 import { MarvelComic } from '@/types/marvel';
 import { ComicSearch } from './ComicSearch';
 import { ComicDetails } from './ComicDetails';
 import type { ComicFormData } from '../../types/comicFormSchema';
 import { SavedComic, comicsService } from '@/services/comics';
+import { useSearchComics } from '@/hooks/useSearchComics';
 
 interface NewComicModalProps {
   children: React.ReactNode;
-  onSave?: (comic: SavedComic) => void;
+  onSave: (comic: SavedComic) => void;
 }
 
 export function NewComicModal({ children, onSave }: NewComicModalProps) {
   const [search, setSearch] = useState('');
-  const [suggestions, setSuggestions] = useState<MarvelComic[]>([]);
   const [selectedComic, setSelectedComic] = useState<MarvelComic | null>(null);
-  const [isSearching, setIsSearching] = useState(false);
-  const [noResults, setNoResults] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-
   const debouncedSearch = useDebounce(search, 500);
+  const { data: suggestions = [], isLoading, isError } = useSearchComics(debouncedSearch);
 
-  useEffect(() => {
-    async function fetchComics() {
-      if (debouncedSearch.length < 3) {
-        setSuggestions([]);
-        setNoResults(false);
-        return;
-      }
-
-      setIsSearching(true);
-      setNoResults(false);
-      try {
-        const results = await searchComics(debouncedSearch);
-        setSuggestions(results);
-        setNoResults(results.length === 0);
-      } catch (error) {
-        console.error('Error searching comics:', error);
-        setSuggestions([]);
-        setNoResults(true);
-      } finally {
-        setIsSearching(false);
-      }
-    }
-
-    fetchComics();
-  }, [debouncedSearch]);
+  const noResults = !isLoading && search.length >= 3 && suggestions.length === 0;
 
   const resetFields = () => {
     setSearch('');
-    setSuggestions([]);
     setSelectedComic(null);
     setIsOpen(false);
   };
@@ -67,14 +39,13 @@ export function NewComicModal({ children, onSave }: NewComicModalProps) {
   const handleComicSelect = (comic: MarvelComic) => {
     setSelectedComic(comic);
     setSearch('');
-    setSuggestions([]);
   };
 
   const handleSave = (data: ComicFormData) => {
     if (!selectedComic) return;
 
     const savedComic = comicsService.save(selectedComic, data);
-    onSave?.(savedComic);
+    onSave(savedComic);
     resetFields();
   };
 
@@ -95,9 +66,11 @@ export function NewComicModal({ children, onSave }: NewComicModalProps) {
         <ComicSearch
           search={search}
           onSearchChange={setSearch}
-          isSearching={isSearching}
+          isSearching={isLoading}
+          isError={isError}
+          isIdle={debouncedSearch.length < 3}
           noResults={noResults}
-          suggestions={suggestions}
+          suggestions={selectedComic ? [] : suggestions}
           selectedComic={selectedComic}
           onComicSelect={handleComicSelect}
           onComicRemove={resetFields}

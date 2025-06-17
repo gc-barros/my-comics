@@ -8,6 +8,8 @@ interface ComicSearchProps {
   search: string;
   onSearchChange: (value: string) => void;
   isSearching: boolean;
+  isError: boolean;
+  isIdle: boolean;
   noResults: boolean;
   suggestions: MarvelComic[];
   selectedComic: MarvelComic | null;
@@ -33,6 +35,8 @@ export function ComicSearch({
   search,
   onSearchChange,
   isSearching,
+  isError,
+  isIdle,
   noResults,
   suggestions,
   selectedComic,
@@ -59,14 +63,18 @@ export function ComicSearch({
               className="w-full bg-primary text-surface placeholder:text-light-accent/50 border-light-accent/20 focus-visible:ring-light-accent focus-visible:ring-offset-0"
             />
             {isSearching && (
-              <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-light-accent">
+              <p className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-light-accent">
                 Searching...
-              </div>
+              </p>
             )}
+            {isIdle && (
+              <p className="mt-2 text-sm text-light-accent">Enter at least 3 letters...</p>
+            )}
+            {isError && <p className="mt-2 text-sm text-red-400">Error searching for comics.</p>}
             {noResults && search.length >= 3 && !isSearching && (
-              <div className="mt-2 text-sm text-red-400">
+              <p className="mt-2 text-sm text-red-400">
                 No Marvel Comics found for &ldquo;{search}&rdquo;
-              </div>
+              </p>
             )}
           </>
         )}
