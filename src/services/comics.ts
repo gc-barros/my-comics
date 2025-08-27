@@ -1,5 +1,6 @@
 import { MarvelComic } from '@/types/marvel';
 import { ComicFormData } from '@/types/comicFormSchema';
+import mockStorage from './mockStorage';
 
 export interface SavedComic {
   id: string;
@@ -16,8 +17,11 @@ const STORAGE_KEY = '@my-comics:saved';
 
 export const comicsService = {
   getAll: (): SavedComic[] => {
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (!saved) return [];
+    let saved = localStorage.getItem(STORAGE_KEY);
+    if (!saved || saved === '[]') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(mockStorage));
+      saved = JSON.stringify(mockStorage);
+    }
     return JSON.parse(saved, (key, value) => {
       if (value && (key === 'plannedStartDate' || key === 'createdAt' || key === 'updatedAt')) {
         return new Date(value);
